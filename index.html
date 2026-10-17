@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>লোকনাথ সবজি ভান্ডার | অনলাইন সবজি অর্ডার</title>
+<style>
+:root{--green:#16733b;--dark:#104d2a;--light:#f1f8ed;--orange:#ffb52e;--text:#183322}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,"Noto Sans Bengali",sans-serif;background:#f7faf6;color:var(--text)}
+header{background:linear-gradient(135deg,#126b35,#24964b);color:#fff;padding:24px 16px;text-align:center}
+.logo{font-size:42px}h1{margin:8px 0;font-size:27px}header p{margin:6px 0}
+.pill{display:inline-block;background:#fff;color:var(--dark);border-radius:24px;padding:7px 13px;font-weight:bold;margin-top:8px}
+.wrap{max-width:1000px;margin:auto;padding:16px}
+.notice{background:#fff8dc;border:1px solid #ffe29a;border-radius:12px;padding:12px 14px;margin:10px 0 18px;font-size:14px}
+.toprow{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+input[type=search]{padding:12px;border:1px solid #cbd8cb;border-radius:10px;font-size:16px;width:100%;max-width:350px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:12px;margin-top:14px}
+.card{background:#fff;border:1px solid #e1e9df;border-radius:14px;padding:14px;box-shadow:0 2px 8px #173b1710}
+.emoji{font-size:38px;text-align:center;background:var(--light);border-radius:10px;padding:8px}
+.name{font-weight:bold;font-size:17px;margin:10px 0 4px}
+.price{color:var(--green);font-weight:bold;font-size:18px}
+.unit{font-size:12px;color:#66756a}
+.controls{display:flex;gap:6px;align-items:center;margin-top:10px}
+.controls input{width:65px;min-width:0;padding:8px;border:1px solid #ccd8cc;border-radius:8px}
+button{border:0;border-radius:9px;padding:10px 12px;font-weight:bold;cursor:pointer}
+.add{background:var(--green);color:white;flex:1}
+.cart{background:white;border-radius:14px;padding:16px;margin:22px 0;border:1px solid #dce8da}
+.cart h2{margin-top:0}.cartline{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #edf0ec;padding:8px 0}
+.total{font-size:20px;font-weight:bold;margin:14px 0}
+label{display:block;font-weight:bold;margin:10px 0 5px}
+input[type=text],input[type=tel],textarea,select{width:100%;padding:12px;border:1px solid #cbd8cb;border-radius:9px;font-size:16px}
+textarea{min-height:75px}
+.checkout{width:100%;background:#128c4a;color:#fff;font-size:17px;padding:14px}
+footer{text-align:center;background:#e9f4e6;padding:18px;font-size:13px}
+.small{font-size:12px;color:#5e6f61}
+@media(max-width:420px){h1{font-size:23px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.card{padding:10px}.name{font-size:15px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">🥬🧺</div>
+  <h1>লোকনাথ সবজি ভান্ডার</h1>
+  <p>টাটকা সবজি, আপনার বাড়ির কাছেই!</p>
+  <div class="pill">📍 পুণ্ডিবাড়ি • ২–৩ কিমি Home Delivery</div>
+</header>
+<main class="wrap">
+  <div class="notice">🛵 <b>হোম ডেলিভারি:</b> পুণ্ডিবাড়ি দোকান থেকে আনুমানিক ২–৩ কিমির মধ্যে। ডেলিভারি চার্জ থাকলে দোকান থেকে অর্ডার নিশ্চিত করার সময় জানানো হবে।</div>
+  <div class="toprow">
+    <h2 style="margin:0">আজকের সবজি</h2>
+    <input id="search" type="search" placeholder="সবজি খুঁজুন..." oninput="renderFilter()">
+  </div>
+  <div class="small" style="margin-top:8px">দাম প্রতি কেজি, যদি আলাদা করে না লেখা থাকে। অর্ডার নিশ্চিত করার আগে দোকানের সঙ্গে দাম ও স্টক মিলিয়ে নিন।</div>
+  <section class="grid" id="products"></section>
+  <section class="cart">
+    <h2>🛒 আপনার ঝুড়ি</h2>
+    <div id="cartItems">এখনও কোনো সবজি যোগ করা হয়নি।</div>
+    <div class="total" id="total">মোট: ₹0</div>
+    <h2>🚚 ডেলিভারির তথ্য</h2>
+    <label for="customer">আপনার নাম *</label><input id="customer" type="text" placeholder="নাম লিখুন">
+    <label for="phone">মোবাইল নম্বর *</label><input id="phone" type="tel" placeholder="আপনার মোবাইল নম্বর">
+    <label for="address">সম্পূর্ণ ঠিকানা *</label><textarea id="address" placeholder="বাড়ির ঠিকানা / পাড়া / কাছের পরিচিত জায়গা"></textarea>
+    <label for="payment">পেমেন্ট</label><select id="payment"><option>Cash on Delivery (বাড়িতে টাকা দেব)</option><option>দোকান থেকে নিয়ে যাব</option></select>
+    <label for="note">বিশেষ নির্দেশ (ঐচ্ছিক)</label><textarea id="note" placeholder="যেমন: পাকা টমেটো দেবেন না"></textarea>
+    <button class="checkout" onclick="sendOrder()">WhatsApp-এ অর্ডার পাঠান</button>
+    <p class="small">বোতাম চাপলে WhatsApp খুলবে। অর্ডার পাঠানো মানেই অর্ডার নিশ্চিত নয়—দোকান থেকে নিশ্চিতকরণ নিন।</p>
+  </section>
+</main>
+<footer><b>লোকনাথ সবজি ভান্ডার</b><br>পুণ্ডিবাড়ি, পশ্চিমবঙ্গ<br>WhatsApp: +91 86370 90911</footer>
+<script>
+const products = [
+ {id:'alu_bhutan',name:'ভুটান আলু',en:'Bhutan Potato',price:35,unit:'কেজি',emoji:'🥔'},
+ {id:'alu_desi',name:'দেশি আলু',en:'Desi Potato',price:35,unit:'কেজি',emoji:'🥔'},
+ {id:'onion',name:'পেঁয়াজ',en:'Onion',price:60,unit:'কেজি',emoji:'🧅'},
+ {id:'chili',name:'লঙ্কা',en:'Green Chili',price:120,unit:'কেজি',emoji:'🌶️'},
+ {id:'tomato',name:'টমেটো',en:'Tomato',price:50,unit:'কেজি',emoji:'🍅'},
+ {id:'eggplant_big',name:'মোটা বেগুন',en:'Large Eggplant',price:60,unit:'কেজি',emoji:'🍆'},
+ {id:'cauliflower',name:'ফুলকপি',en:'Cauliflower',price:60,unit:'কেজি',emoji:'🥦'},
+ {id:'eggplant_slim',name:'চিকন বেগুন',en:'Slim Eggplant',price:60,unit:'কেজি',emoji:'🍆'},
+ {id:'radish',name:'মূলা',en:'Radish',price:50,unit:'কেজি',emoji:'🥕'},
+ {id:'ginger',name:'আদা',en:'Ginger',price:100,unit:'কেজি',emoji:'🫚'},
+ {id:'garlic',name:'রসুন',en:'Garlic',price:200,unit:'কেজি',emoji:'🧄'},
+ {id:'carrot',name:'গাজর',en:'Carrot',price:100,unit:'কেজি',emoji:'🥕'},
+ {id:'capsicum',name:'ক্যাপসিকাম',en:'Capsicum',price:120,unit:'কেজি',emoji:'🫑'},
+ {id:'beans',name:'বিনস',en:'Beans',price:150,unit:'কেজি',emoji:'🫛'},
+ {id:'raw_mango',name:'কাঁচা আম',en:'Raw Mango',price:300,unit:'কেজি',emoji:'🥭'},
+ {id:'lemon',name:'লেবু',en:'Lemon',price:10,unit:'১টি',emoji:'🍋',special:true},
+ {id:'jalpai',name:'জলপাই',en:'Olive/Jalpai',price:40,unit:'কেজি',emoji:'🫒'},
+ {id:'cabbage',name:'পাতাকপি',en:'Cabbage',price:60,unit:'কেজি',emoji:'🥬'}
+];
+let cart={};
+const money=n=>'₹'+(Math.round(n*100)/100).toLocaleString('en-IN',{maximumFractionDigits:2});
+function render(list=products){
+ document.getElementById('products').innerHTML=list.map(p=>`
+ <article class="card">
+  <div class="emoji">${p.emoji}</div><div class="name">${p.name}</div>
+  <div class="price">${money(p.price)} <span class="unit">/ ${p.unit}</span></div>
+  ${p.special?'<div class="small">৩টি ₹২০</div>':''}
+  <div class="controls">
+   <input id="qty_${p.id}" type="number" min="${p.special?1:0.25}" step="${p.special?1:0.25}" value="${p.special?1:1}" aria-label="পরিমাণ">
+   <button class="add" onclick="addToCart('${p.id}')">যোগ করুন</button>
+  </div>
+ </article>`).join('');
+}
+function renderFilter(){
+ const q=document.getElementById('search').value.trim().toLowerCase();
+ render(products.filter(p=>(p.name+' '+p.en).toLowerCase().includes(q)));
+}
+function priceFor(p,qty){if(p.id==='lemon') return qty>=3?Math.floor(qty/3)*20+(qty%3)*10:qty*10;return p.price*qty;}
+function addToCart(id){
+ const p=products.find(x=>x.id===id);const qty=parseFloat(document.getElementById('qty_'+id).value);
+ if(!qty||qty<=0){alert('সঠিক পরিমাণ লিখুন।');return}
+ cart[id]=(cart[id]||0)+qty;renderCart();alert(p.name+' ঝুড়িতে যোগ হয়েছে।');
+}
+function removeItem(id){delete cart[id];renderCart()}
+function renderCart(){
+ const ids=Object.keys(cart);
+ if(!ids.length){document.getElementById('cartItems').innerHTML='এখনও কোনো সবজি যোগ করা হয়নি।';document.getElementById('total').textContent='মোট: ₹0';return}
+ let total=0;
+ document.getElementById('cartItems').innerHTML=ids.map(id=>{
+  const p=products.find(x=>x.id===id),q=cart[id],sub=priceFor(p,q);total+=sub;
+  return `<div class="cartline"><span>${p.name} — ${q} ${p.unit==='কেজি'?'কেজি':(q===1?'টি':'টি')}<br><span class="small">${money(sub)}</span></span><button onclick="removeItem('${id}')">বাদ দিন</button></div>`
+ }).join('');
+ document.getElementById('total').textContent='মোট: '+money(total);
+}
+function sendOrder(){
+ const ids=Object.keys(cart);
+ if(!ids.length){alert('আগে ঝুড়িতে সবজি যোগ করুন।');return}
+ const name=document.getElementById('customer').value.trim(),phone=document.getElementById('phone').value.trim(),address=document.getElementById('address').value.trim();
+ if(!name||!phone||!address){alert('নাম, মোবাইল নম্বর ও ঠিকানা পূরণ করুন।');return}
+ let total=0,lines=[];
+ ids.forEach(id=>{const p=products.find(x=>x.id===id),q=cart[id],sub=priceFor(p,q);total+=sub;lines.push(`• ${p.name}: ${q} ${p.unit==='কেজি'?'কেজি':'টি'} = ${money(sub)}`)});
+ const message=`নমস্কার, আমি লোকনাথ সবজি ভান্ডার থেকে সবজি অর্ডার করতে চাই।%0A%0Aঅর্ডার:%0A${encodeURIComponent(lines.join('\n'))}%0A%0Aসবজির মোট: ${encodeURIComponent(money(total))}%0Aপেমেন্ট: ${encodeURIComponent(document.getElementById('payment').value)}%0A%0Aনাম: ${encodeURIComponent(name)}%0Aমোবাইল: ${encodeURIComponent(phone)}%0Aঠিকানা: ${encodeURIComponent(address)}%0Aবিশেষ নির্দেশ: ${encodeURIComponent(document.getElementById('note').value.trim()||'নেই')}%0A%0Aদয়া করে স্টক, দাম ও ডেলিভারি চার্জ নিশ্চিত করবেন।`;
+ window.open('https://wa.me/918637090911?text='+message,'_blank');
+}
+render();
+</script>
+</body>
+</html>
